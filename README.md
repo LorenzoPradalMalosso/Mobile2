@@ -39,7 +39,7 @@ Assim, criamos esse README.md somente pelo terminal.
         - Linguagens: JavaScrpi / TypeScript 
         - Ambientes: Mac, Win, Linux
 
-    - Fluter:
+    - Flutter:
         - SDK: Flutter SDK
         - IDE: VSCode, Android Studio
         - Linguagens: Dart
