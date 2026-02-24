@@ -67,3 +67,22 @@ Assim, criamos esse README.md somente pelo terminal.
 - Adicionar ADB e o Emulator as Varáveis de Ambiente
 - Criação da Imagem do Emulador - via sdkmanager
 - Build do Emulador - via sdkmanager
+
+### Criação de Projetos e Códigos da Linha de Comando
+
+- Criação de projetos:
+    - flutter create nome_do_app
+        - Flags:
+            - --empty : Cria um aplicativo "vazio"(hello World!)
+            - --platforms : Permite a seleção de uma plataforma de desenvolvimento
+                - ex: --platforms=android (A criação do projeto será somente para a plataforma android)
+    - Exemplo de criação de um aplicativo andoroid vazio:
+        - fluter create nome_do_app --empty --platforms=android
+        - OBS: Nome do aplicativo: Todas as ltras minúsculas, separação de palavras com "_";
+    - flutter doctor:
+        - Permite correção de pequenos problenas no flutter e identificação dos parâmetros funionais em relação as plataformas de desenvolvimento
+        - Sempre rodas o flutter docor no começo do desenvolvimento
+    - flutter clean:
+        - Limpa cache do build(apaga o apk interior)
+    - flutter run -v
+        - Build do app (apk)
