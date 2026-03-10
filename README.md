@@ -86,3 +86,12 @@ Assim, criamos esse README.md somente pelo terminal.
         - Limpa cache do build(apaga o apk interior)
     - flutter run -v
         - Build do app (apk)
+
+- Gerenciamento de dependências do PubSpec()
+    - Instalação
+        - flutter pub add nome_dependencia
+    - Baixar e Instalar dependências projetadas
+        - flutter pub get
+    - Outros comandos do Flutter (dependências)
+        - flutter pub outdated (verifica se as dependências estão desatualizadas)
+        - flutter pub upgrade (atualiza as dependências do flutter pub)
