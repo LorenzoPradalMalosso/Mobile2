@@ -14,6 +14,7 @@ void main(List<String> args) {
   );
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   // Remover o const
   // Para usar a lista de imagens
