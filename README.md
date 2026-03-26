@@ -122,3 +122,11 @@ graph BT
     SC --> ABar & BD & BNBar & DW & FAB & SB
 
 ```
+
+## Matriz Comparativa entre StateLess e StateFull
+
+| Características | Stateless Widget | Statefull Widget |
+| - | - | - |
+| Mutabilidade | Imutável (Não muda após carregar) | Mutável (Permite mudanças de estado após carregamento do aplicativo) |
+| Uso Ideal | Layouts fixo e exibição de dados estatísticos |  | 
+|  |  |  |
