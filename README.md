@@ -95,3 +95,30 @@ Assim, criamos esse README.md somente pelo terminal.
     - Outros comandos do Flutter (dependências)
         - flutter pub outdated (verifica se as dependências estão desatualizadas)
         - flutter pub upgrade (atualiza as dependências do flutter pub)
+
+### Estrutura de um Aplicativo
+
+#### A Hierarquia de Árvore
+
+Gráfico com Demonstração da Hierarquia
+
+```mermaid
+
+graph BT
+
+    MA['MaterialAPP']
+    STL['StateLess Widget']
+    STF['StateFull Widget']
+    SC['Scaffold']
+    ABar['AppBar']
+    BD['Body']
+    BNBar['BottomNavigationBar']
+    DW['Drawer']
+    FAB['FloatActionButton']
+    SB['SnackBar']
+
+    MA --> STL & STF
+    STL & STF & --> SC
+    SC --> ABar & BD & BNBar & DW & FAB & SB
+
+```
