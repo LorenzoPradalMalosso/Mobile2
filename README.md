@@ -96,7 +96,7 @@ Assim, criamos esse README.md somente pelo terminal.
         - flutter pub outdated (verifica se as dependências estão desatualizadas)
         - flutter pub upgrade (atualiza as dependências do flutter pub)
 
-### Estrutura de um Aplicativo
+## Estrutura de um Aplicativo
 
 #### A Hierarquia de Árvore
 
