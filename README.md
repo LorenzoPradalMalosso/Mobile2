@@ -118,7 +118,7 @@ graph BT
     SB['SnackBar']
 
     MA --> STL & STF
-    STL & STF & --> SC
+    STL & STF --> SC
     SC --> ABar & BD & BNBar & DW & FAB & SB
 
 ```
