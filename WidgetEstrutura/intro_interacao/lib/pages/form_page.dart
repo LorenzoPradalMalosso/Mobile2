@@ -9,8 +9,6 @@
 
 // form => Ajuda na validação de dados
 
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 // Chama as mudanças de estado
