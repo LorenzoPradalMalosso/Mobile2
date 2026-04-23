@@ -2,6 +2,7 @@
 // Vai ter botões de navegação para outras telas
 
 import 'package:flutter/material.dart';
+import 'package:intro_interacao/widgets/bnb.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -38,6 +39,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: Bnb(context),
     );
   }
 }
