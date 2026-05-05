@@ -537,9 +537,6 @@ FitLife/
 ├── lib/
 │   ├── main.dart                    # Ponto de entrada, configuração do Provider e tema
 │   │
-│   ├── models/
-│   │   └── atividade.dart           # Modelo de dados da Atividade
-│   │
 │   ├── providers/
 │   │   └── FitLife_provider.dart   # Provider principal (estado global)
 │   │
