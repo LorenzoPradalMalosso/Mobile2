@@ -536,8 +536,11 @@ FitLife/
 ├── lib/
 │   ├── main.dart                    # Ponto de entrada, configuração do Provider e tema
 │   │
+│   ├── models/                      # Model principal
+│   │   └── atividade.dart           # Modelo para criar uma atividade
+│   │
 │   ├── providers/
-│   │   └── FitLife_provider.dart   # Provider principal (estado global)
+│   │   └── fitLife_provider.dart   # Provider principal (estado global)
 │   │
 │   ├── screens/
 │   │   ├── tela_inicial.dart        # RF-001: Tela de apresentação
