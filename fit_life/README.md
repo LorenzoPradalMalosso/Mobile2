@@ -125,7 +125,6 @@ O sistema deve:
 ### 2.4 Ambiente Operacional
 
 * Dispositivos Android (API 21+)
-* Dispositivos iOS (iOS 12+)
 * Flutter SDK (versão estável mais recente)
 
 ---
@@ -141,7 +140,7 @@ O sistema deve:
 
 ### 2.6 Suposições
 
-* O usuário possui smartphone com sistema operacional Android ou iOS
+* O usuário possui smartphone com sistema operacional Android
 * O usuário possui conhecimentos básicos de operação de aplicativos mobile
 * O volume de atividades cadastradas é de pequeno porte
 
@@ -369,7 +368,7 @@ O sistema deve:
 
 ```mermaid
 flowchart LR
-    Usuario["👤 Usuário"]
+    Usuario["Usuário"]
 
     Usuario --> UC1[Visualizar Tela Inicial]
     Usuario --> UC2[Gerenciar Atividades Pendentes]
