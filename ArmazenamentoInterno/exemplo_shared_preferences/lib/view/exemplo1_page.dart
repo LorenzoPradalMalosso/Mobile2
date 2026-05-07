@@ -27,13 +27,16 @@ class _Exemplo1PageState extends State<Exemplo1Page> {
   // Buscar nome nas preferencias
   _carregarNomeShared() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Atuaiza o estado da página
     setState(() {
+      // Atribuindo a variável o valor relacionado a chave buscada no shared
       _nomeSalvo = prefs.getString("nome") ?? ""; // Operador de nulidade
     });
   }
 
   // Início da página
   @override
+  // Método que é iniciado antes mesmo do build da tela
   void initState() { // Carrega informações do SharedPreferences antes de buildar a tela pela primeira vez
     super.initState();
     _carregarNomeShared();
@@ -46,6 +49,7 @@ class _Exemplo1PageState extends State<Exemplo1Page> {
       body: Padding(
         padding: EdgeInsets.all(8),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _nomeInput,
