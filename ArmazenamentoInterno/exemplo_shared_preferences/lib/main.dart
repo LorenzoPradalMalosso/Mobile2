@@ -46,6 +46,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     if (_loading) {
       return const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
