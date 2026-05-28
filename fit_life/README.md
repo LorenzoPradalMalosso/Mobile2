@@ -18,7 +18,7 @@ Este documento descreve os requisitos do sistema **FitLife**, com objetivo de:
 * Definir funcionalidades da aplicação mobile
 * Padronizar entendimento entre stakeholders
 * Servir como base para desenvolvimento e testes
-* Orientar a implementação da arquitetura com Provider
+* Orientar a implementação da arquitetura com Provider  
 
 ---
 
