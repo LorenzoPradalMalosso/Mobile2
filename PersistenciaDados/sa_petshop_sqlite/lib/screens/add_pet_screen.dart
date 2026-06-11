@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sa_petshop_sqlite/controllers/pet_controller.dart';
 import 'package:sa_petshop_sqlite/models/pet_model.dart';
 
+
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({super.key});
 
@@ -31,7 +32,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
         nome: _nomeController.text,
         raca: _racaController.text,
         nomeDono: _donoController.text,
-        telefone: _telefoneController.text,
+        telefoneDono: _telefoneController.text,
       );
 
       // Chamar o controller para persistir no SQLite

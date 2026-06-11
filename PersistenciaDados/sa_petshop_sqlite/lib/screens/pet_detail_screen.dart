@@ -22,7 +22,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
       appBar: AppBar(title: Text("Perfil: ${widget.pet.nome}")),
       body: Column(
         children: [
-          ListTile(title: Text("Dono: ${widget.pet.nomeDono}"), subtitle: Text("Tel: ${widget.pet.telefone}")),
+          ListTile(title: Text("Dono: ${widget.pet.nomeDono}"), subtitle: Text("Tel: ${widget.pet.telefoneDono}")),
           Divider(),
           Padding(padding: EdgeInsets.all(8), child: Text("Histórico de Consultas", style: TextStyle(fontWeight: FontWeight.bold))),
           Expanded(

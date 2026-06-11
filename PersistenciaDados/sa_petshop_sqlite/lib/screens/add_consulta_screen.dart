@@ -123,7 +123,7 @@ class _AddConsultaScreenState extends State<AddConsultaScreen> {
             ),
             Row(
               children: [
-                Expanded(child: Text("Data: ${horaFormatada.format(
+                Expanded(child: Text("Hora: ${horaFormatada.format(
                   DateTime(0,0,0,_selectedTime.hour,_selectedTime.minute))}")),
                 TextButton(onPressed: ()=>_horaSelecionada(context), child: Text("Selecionar Hora"))
               ],
