@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:path/path.dart';
 import 'package:sa_petshop_sqlite/models/pet_model.dart';
 import 'package:sa_petshop_sqlite/models/consulta_model.dart';
@@ -11,7 +13,7 @@ class DatabaseHelper {
 
   // Construir o Singleton
   // Essa Classe não possui um Construtor Normal,
-  // ele precisa do factory para estabelecer a conexão
+  // Ele precisa do factory para estabelecer a conexão
   DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
 

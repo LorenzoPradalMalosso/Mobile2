@@ -1,7 +1,12 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sa_petshop_sqlite/controllers/pet_controller.dart';
 import 'package:sa_petshop_sqlite/models/pet_model.dart';
+import 'package:sa_petshop_sqlite/screens/add_pet_screen.dart';
+import 'package:sa_petshop_sqlite/screens/pet_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

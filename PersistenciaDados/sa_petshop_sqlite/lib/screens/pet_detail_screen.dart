@@ -1,8 +1,11 @@
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sa_petshop_sqlite/database/database_helper.dart';
 import 'package:sa_petshop_sqlite/models/pet_model.dart';
 import 'package:sa_petshop_sqlite/models/consulta_model.dart';
+import 'package:sa_petshop_sqlite/screens/add_consulta_screen.dart';
 
 class PetDetailScreen extends StatefulWidget {
   final Pet pet; // Será importado da tela anterior o obj PET
@@ -23,6 +26,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
           Divider(),
           Padding(padding: EdgeInsets.all(8), child: Text("Histórico de Consultas", style: TextStyle(fontWeight: FontWeight.bold))),
           Expanded(
+            // Lista com os serviçoes deste pet
             child: FutureBuilder<List<Consulta>>(
               future: DatabaseHelper().getConsultasPorPet(widget.pet.id!),
               builder: (context, snapshot) {
@@ -43,6 +47,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
           )
         ],
       ),
+      // Botão para criar novo serviço para o pet
       floatingActionButton: FloatingActionButton.extended(
         label: Text("Agendar"),
         icon: Icon(Icons.add_task),
