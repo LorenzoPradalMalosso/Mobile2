@@ -95,7 +95,6 @@ class _TodoListViewState extends State<TodoListView> {
 
   // Método para adicionar tarefa
   void _adicionarTarefa() {
-    //TODO: create Tarefa
     if(_tarefasController.text.trim().isNotEmpty){
       // Ste tarefa não estiver vazia
       // Adiciona a tarefa a lista
@@ -110,11 +109,10 @@ class _TodoListViewState extends State<TodoListView> {
 
   // Método para deletar tarefa
   void _deletarTarefa(int index){
-    //TODO: delete Tarefa
-  if (_tarefas[index]["concluida"] == true) {
-    setState(() {
-      _tarefas.remove(_tarefas[index]);
-    });
-  }
+    if (_tarefas[index]["concluida"] == true) {
+      setState(() {
+        _tarefas.remove(_tarefas[index]);
+      });
+    }
   }
 }

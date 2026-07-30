@@ -1,1 +1,5 @@
+analyzer:
+  errors:
+    prefer_final_fields: ignore
+    strict_top_level_inference: ignore
 include: package:flutter_lints/flutter.yaml
