@@ -67,14 +67,14 @@ O aplicativo utiliza SQLite para realizar a persistência local dos registros. D
 
 ### Tabela `registros`
 
-| **Campo**     | **Tipo**| **Restrições**                 | **Descrição**                              |
-|---------------|---------|--------------------------------|--------------------------------------------|
-| `id`          | INTEGER | PRIMARY KEY <br> AUTOINCREMENT | Identificador único do registro            |
-| `data_hora`   | TEXT    | NOT NULL                       | Data e hora em que o registro foi realizado|
-| `latitude`    | REAL    | NOT NULL                       | Latitude obtida pelo GPS                   |
-| `longitude`   | REAL    | NOT NULL                       | Longitude obtida pelo GPS                  |
-| `observacao`  | TEXT    | NOT NULL                       | Observação adicionada pelo usuário         |
-| `caminho_foto`| TEXT    | NOT NULL                       | Caminho local da foto capturada            |
+| **Campo**     | **Tipo** | **Restrições**                 | **Descrição**                              |
+|---------------|----------|--------------------------------|--------------------------------------------|
+| `id`          | INTEGER  | PRIMARY KEY <br> AUTOINCREMENT | Identificador único do registro            |
+| `data_hora`   | TEXT     | NOT NULL                       | Data e hora em que o registro foi realizado|
+| `latitude`    | REAL     | NOT NULL                       | Latitude obtida pelo GPS                   |
+| `longitude`   | REAL     | NOT NULL                       | Longitude obtida pelo GPS                  |
+| `observacao`  | TEXT     | NOT NULL                       | Observação adicionada pelo usuário         |
+| `caminho_foto`| TEXT     | NOT NULL                       | Caminho local da foto capturada            |
 
 Cada registro reúne as informações da atividade realizada em campo:
 

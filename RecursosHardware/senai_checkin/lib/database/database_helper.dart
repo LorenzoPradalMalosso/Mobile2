@@ -1,42 +1,61 @@
+// ignore_for_file: avoid_print
+
 import 'package:senai_checkin/models/registro_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   // Criação do Banco de Dados
-  // ignore: constant_identifier_names
-  static const String db_nome = "senai_checkin.db";
-  static const String table_nome = "registros";
-  static const String create_table = """
-    CREATE TABLE IF NOT EXISTS $table_nome(
+
+  static const String dbNome = "senai_checkin.db";
+  static const String tableNome = "registros";
+
+  static const String createTable = """
+    CREATE TABLE IF NOT EXISTS $tableNome(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      data_hora TEXT NOT NULLM,
+      data_hora TEXT NOT NULL,
       latitude REAL NOT NULL,
       longitude REAL NOT NULL,
       observacao TEXT NOT NULL,
-      caminho_foto TEXT NOT NULL)""";
+      caminho_foto TEXT NOT NULL)
+    """
+  ;
 
   // Método de conexão com o Banco de Dados
   // Método do tipo future (async) vou retornar o Banco de Dados
-  Future<Database> _getDB() async {
+  Future<Database> getDB() async {
     return openDatabase(
       // Colocar o endereço do DB
-      join(await getDatabasesPath(), db_nome),
+      join(await getDatabasesPath(), dbNome),
       onCreate: (db, version) { // Se é a primeira vez executando, ele irá criar o DB
-        return db.execute(create_table);
+        return db.execute(createTable);
       },
       version: 1,
     );
   }
 
   // CRUD do Banco
-  void create(Registro registro) async {
+  Future<void> create(Registro registro) async {
     try {
-      final Database db = await _getDB();
-      await db.insert(table_nome, registro.toMap()); // Insere o dado no banco
+      final Database db = await getDB();
+      await db.insert(tableNome, registro.toMap()); // Insere o dado no banco
     } catch (e) {
       print (e);
-      return;
     }
   }
+
+  // Método para buscar todos os registros
+  Future<List<Registro>> read() async {
+    try {
+      final Database db = await getDB();
+
+      final List<Map<String, dynamic>> maps = await db.query(tableNome);
+
+      return maps.map((map) => Registro.fromMap(map)).toList();
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+  
 }

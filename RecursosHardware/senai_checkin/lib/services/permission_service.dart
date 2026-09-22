@@ -1,0 +1,28 @@
+import 'package:permission_handler/permission_handler.dart';
+
+class PermissionService {
+  // Solicita permissão da câmera
+  Future<bool> solicitarCamera() async {
+    PermissionStatus status = await Permission.camera.request();
+
+    return status.isGranted;
+  }
+
+  // Solicita permissão da localização
+  Future<bool> solicitarLocalizacao() async {
+    PermissionStatus status = await Permission.locationWhenInUse.request();
+
+    return status.isGranted;
+  }
+
+  // Verifica se a câmera já possui permissão
+  Future<bool> cameraPermitida() async {
+    return await Permission.camera.isGranted;
+  }
+
+  // Verifica se a localização já possui permissão
+  Future<bool> localizacaoPermitida() async {
+    return await Permission.locationWhenInUse.isGranted;
+  }
+  
+}
