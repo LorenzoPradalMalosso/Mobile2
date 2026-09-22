@@ -11,10 +11,6 @@ class CameraService {
     bool permitido = await _permissionService.cameraPermitida();
 
     // Caso não tenha sido concedida, solicita
-    if (!permitido) {
-      permitido = await _permissionService.solicitarCamera();
-    }
-
     // Se o usuário negar a permissão
     if (!permitido) {
       return null;

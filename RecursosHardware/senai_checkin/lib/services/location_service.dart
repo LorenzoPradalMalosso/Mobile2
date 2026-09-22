@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 import 'permission_service.dart';
@@ -10,10 +12,6 @@ class LocationService {
     bool permitido = await _permissionService.localizacaoPermitida();
 
     // Caso não tenha sido concedida, solicita
-    if (!permitido) {
-      permitido = await _permissionService.solicitarLocalizacao();
-    }
-
     // Se o usuário negar a permissão
     if (!permitido) {
       return null;
@@ -27,13 +25,15 @@ class LocationService {
     }
 
     // Obtém a localização atual
-    Position position = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    );
-
-    return position;
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).timeout(const Duration(seconds: 20));
+    } on TimeoutException {
+      return null;
+    }
   }
   
 }

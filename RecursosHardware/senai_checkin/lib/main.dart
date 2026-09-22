@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 
+import 'services/permission_service.dart';
 import 'views/home_view.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  final PermissionService _permissionService = PermissionService();
+
+  @override
+  void initState() {
+    super.initState();
+    _solicitarPermissoesIniciais();
+  }
+
+  Future<void> _solicitarPermissoesIniciais() async {
+    await _permissionService.solicitarPermissoesIniciais();
+  }
 
   @override
   Widget build(BuildContext context) {

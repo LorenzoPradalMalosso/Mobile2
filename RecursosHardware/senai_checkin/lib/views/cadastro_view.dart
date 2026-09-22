@@ -38,9 +38,9 @@ class _CadastroViewState extends State<CadastroView> {
 
     final sucesso = await _controller.criarRegistro(observacao);
 
-    setState(() => _salvando = false);
-
     if (!mounted) return;
+
+    setState(() => _salvando = false);
 
     if (sucesso) {
       // Feedback sonoro
