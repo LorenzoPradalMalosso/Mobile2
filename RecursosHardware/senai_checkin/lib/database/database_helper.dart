@@ -17,7 +17,8 @@ class DatabaseHelper {
       latitude REAL NOT NULL,
       longitude REAL NOT NULL,
       observacao TEXT NOT NULL,
-      caminho_foto TEXT NOT NULL)
+      caminho_foto TEXT NOT NULL,
+      cidade TEXT NOT NULL DEFAULT '')
     """
   ;
 
@@ -25,12 +26,23 @@ class DatabaseHelper {
   // Método do tipo future (async) vou retornar o Banco de Dados
   Future<Database> getDB() async {
     return openDatabase(
-      // Colocar o endereço do DB
       join(await getDatabasesPath(), dbNome),
-      onCreate: (db, version) { // Se é a primeira vez executando, ele irá criar o DB
+      onCreate: (db, version) {
         return db.execute(createTable);
       },
-      version: 1,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          final columns = await db.rawQuery('PRAGMA table_info($tableNome)');
+          final hasCidade = columns.any((column) => column['name'] == 'cidade');
+
+          if (!hasCidade) {
+            await db.execute(
+              'ALTER TABLE $tableNome ADD COLUMN cidade TEXT NOT NULL DEFAULT ""',
+            );
+          }
+        }
+      },
+      version: 2,
     );
   }
 
@@ -57,5 +69,17 @@ class DatabaseHelper {
       return [];
     }
   }
-  
+
+  Future<void> delete(int id) async {
+    try {
+      final Database db = await getDB();
+      await db.delete(
+        tableNome,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }

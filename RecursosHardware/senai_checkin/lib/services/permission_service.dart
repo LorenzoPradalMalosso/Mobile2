@@ -13,16 +13,14 @@ class PermissionService {
 
   // Solicita permissão da câmera
   Future<bool> solicitarCamera() async {
-    PermissionStatus status = await Permission.camera.request();
-
-    return status.isGranted;
+    final PermissionStatus status = await Permission.camera.request();
+    return status.isGranted || status.isLimited;
   }
 
   // Solicita permissão da localização
   Future<bool> solicitarLocalizacao() async {
-    PermissionStatus status = await Permission.locationWhenInUse.request();
-
-    return status.isGranted;
+    final PermissionStatus status = await Permission.locationWhenInUse.request();
+    return status.isGranted || status.isLimited;
   }
 
   // Verifica se a câmera já possui permissão

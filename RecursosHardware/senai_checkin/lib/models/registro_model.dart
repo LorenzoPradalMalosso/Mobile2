@@ -5,7 +5,8 @@ class Registro {
   double latitude;
   double longitude;
   String observacao;
-  String caminhoFoto; 
+  String caminhoFoto;
+  String cidade;
 
   // Construtor
   Registro({
@@ -15,22 +16,24 @@ class Registro {
     required this.longitude,
     required this.observacao,
     required this.caminhoFoto,
+    this.cidade = '',
   });
 
   // ToMap
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'data_hora' : dataHora,
-      'latitude' : latitude,
-      'longitude' : longitude,
-      'observacao' : observacao,
-      'caminho_foto' : caminhoFoto
+      'data_hora': dataHora,
+      'latitude': latitude,
+      'longitude': longitude,
+      'observacao': observacao,
+      'caminho_foto': caminhoFoto,
+      'cidade': cidade,
     };
   }
 
   // FromMap => factory => construtor alternativo ao construtor principal
-  factory Registro.fromMap(Map<String,dynamic> map) {
+  factory Registro.fromMap(Map<String, dynamic> map) {
     return Registro(
       id: map['id'],
       dataHora: map['data_hora'],
@@ -38,7 +41,7 @@ class Registro {
       longitude: map['longitude'],
       observacao: map['observacao'],
       caminhoFoto: map['caminho_foto'],
+      cidade: map['cidade'] ?? '',
     );
   }
-
 }

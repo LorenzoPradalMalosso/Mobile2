@@ -4,41 +4,58 @@ import 'package:geolocator/geolocator.dart';
 
 import '../database/database_helper.dart';
 import '../models/registro_model.dart';
-import '../services/camera_service.dart';
+import '../services/location_api_service.dart';
 import '../services/location_service.dart';
 
 class RegistroController {
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
-  final CameraService _cameraService = CameraService();
-  final LocationService _locationService = LocationService();
+  RegistroController({
+    DatabaseHelper? databaseHelper,
+    LocationService? locationService,
+  })  : _databaseHelper = databaseHelper ?? DatabaseHelper(),
+        _locationService = locationService ?? LocationService();
 
-  // Cria um novo registro
-  Future<bool> criarRegistro(String observacao) async {
+  final DatabaseHelper _databaseHelper;
+  final LocationService _locationService;
+
+  Future<bool> criarRegistro(
+    String observacao, {
+    required String caminhoFoto,
+    double? latitude,
+    double? longitude,
+  }) async {
     try {
-      // Obtém a localização
-      Position? position = await _locationService.obterLocalizacao();
-
-      if (position == null) {
+      if (observacao.trim().isEmpty || caminhoFoto.trim().isEmpty) {
         return false;
       }
 
-      // Tira a foto
-      String? caminhoFoto = await _cameraService.tirarFoto();
+      double latitudeFinal = latitude ?? 0;
+      double longitudeFinal = longitude ?? 0;
 
-      if (caminhoFoto == null) {
-        return false;
+      if (latitude == null || longitude == null) {
+        final Position? position = await _locationService.obterLocalizacao();
+
+        if (position == null) {
+          return false;
+        }
+
+        latitudeFinal = position.latitude;
+        longitudeFinal = position.longitude;
       }
 
-      // Cria o objeto Registro
-      Registro registro = Registro(
-        dataHora: DateTime.now().toIso8601String(),
-        latitude: position.latitude,
-        longitude: position.longitude,
-        observacao: observacao,
-        caminhoFoto: caminhoFoto,
+      final String cidade = await LocationApiService.buscarNomeCidade(
+        latitudeFinal,
+        longitudeFinal,
       );
 
-      // Salva no banco
+      final Registro registro = Registro(
+        dataHora: DateTime.now().toIso8601String(),
+        latitude: latitudeFinal,
+        longitude: longitudeFinal,
+        observacao: observacao,
+        caminhoFoto: caminhoFoto,
+        cidade: cidade,
+      );
+
       await _databaseHelper.create(registro);
 
       return true;
@@ -56,5 +73,4 @@ class RegistroController {
       return [];
     }
   }
-  
 }

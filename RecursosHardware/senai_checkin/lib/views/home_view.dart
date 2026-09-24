@@ -97,13 +97,17 @@ class _HomeViewState extends State<HomeView> {
                       return RegistroCard(
                         registro: registro,
                         onTap: () async {
-                          await Navigator.push(
+                          final resultado = await Navigator.push<bool>(
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
                                   DetalhesView(registro: registro),
                             ),
                           );
+
+                          if (resultado == true) {
+                            _carregarRegistros();
+                          }
                         },
                       );
                     },

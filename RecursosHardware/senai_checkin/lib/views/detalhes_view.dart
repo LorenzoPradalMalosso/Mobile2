@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
+import '../database/database_helper.dart';
 import '../models/registro_model.dart';
 
 class DetalhesView extends StatelessWidget {
@@ -24,6 +27,73 @@ class DetalhesView extends StatelessWidget {
     }
   }
 
+  Future<void> _excluirRegistro(BuildContext context) async {
+    if (registro.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível identificar este registro para excluir.'),
+          backgroundColor: Color(0xFF990000),
+        ),
+      );
+      return;
+    }
+
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Excluir ponto?'),
+        content: const Text(
+          'Deseja realmente remover este registro e a foto associada?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFCC0000),
+            ),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) {
+      return;
+    }
+
+    try {
+      final arquivoFoto = File(registro.caminhoFoto);
+      if (arquivoFoto.existsSync()) {
+        arquivoFoto.deleteSync();
+      }
+
+      await DatabaseHelper().delete(registro.id!);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ponto excluído com sucesso!'),
+            backgroundColor: Color(0xFF0284C7),
+          ),
+        );
+        Navigator.pop(context, true);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erro ao excluir o ponto.'),
+            backgroundColor: Color(0xFF990000),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +110,13 @@ class DetalhesView extends StatelessWidget {
         backgroundColor: const Color(0xFFCC0000),
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Excluir registro',
+            onPressed: () => _excluirRegistro(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -97,6 +174,57 @@ class DetalhesView extends StatelessWidget {
                     label: 'Localização',
                     valor:
                         'Lat: ${registro.latitude.toStringAsFixed(6)}\nLng: ${registro.longitude.toStringAsFixed(6)}',
+                  ),
+                  const Divider(height: 32),
+                  _buildInfoItem(
+                    icon: Icons.location_city,
+                    label: 'Cidade',
+                    valor: registro.cidade.isNotEmpty
+                        ? registro.cidade
+                        : 'Cidade não identificada',
+                  ),
+                  const SizedBox(height: 18),
+                  Container(
+                    height: 220,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: LatLng(
+                            registro.latitude,
+                            registro.longitude,
+                          ),
+                          initialZoom: 15,
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.none,
+                          ),
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'senai_checkin',
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: LatLng(registro.latitude, registro.longitude),
+                                width: 42,
+                                height: 42,
+                                child: const Icon(
+                                  Icons.location_pin,
+                                  size: 42,
+                                  color: Color(0xFFCC0000),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const Divider(height: 32),
 

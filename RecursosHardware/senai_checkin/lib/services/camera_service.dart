@@ -3,31 +3,31 @@ import 'package:image_picker/image_picker.dart';
 import 'permission_service.dart';
 
 class CameraService {
-  final ImagePicker _picker = ImagePicker();
-  final PermissionService _permissionService = PermissionService();
+  CameraService({ImagePicker? picker, PermissionService? permissionService})
+      : _picker = picker ?? ImagePicker(),
+        _permissionService = permissionService ?? PermissionService();
+
+  final ImagePicker _picker;
+  final PermissionService _permissionService;
 
   Future<String?> tirarFoto() async {
-    // Verifica se a permissão já foi concedida
-    bool permitido = await _permissionService.cameraPermitida();
+    final permitido = await _permissionService.cameraPermitida()
+        ? true
+        : await _permissionService.solicitarCamera();
 
-    // Caso não tenha sido concedida, solicita
-    // Se o usuário negar a permissão
     if (!permitido) {
       return null;
     }
 
-    // Abre a câmera
-    XFile? imagem = await _picker.pickImage(
+    final XFile? imagem = await _picker.pickImage(
       source: ImageSource.camera,
+      preferredCameraDevice: CameraDevice.rear,
     );
 
-    // Usuário cancelou a câmera
     if (imagem == null) {
       return null;
     }
 
-    // Retorna o caminho da imagem
     return imagem.path;
   }
-  
 }
