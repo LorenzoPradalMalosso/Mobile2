@@ -6,6 +6,7 @@ import '../controllers/ponto_controller.dart';
 import '../models/punch_record.dart';
 import '../models/workplace.dart';
 import '../services/location_service.dart';
+import '../services/api_service.dart';
 import 'cadastro_view.dart';
 import 'detalhes_view.dart';
 import '../widgets/punch_record_card.dart';
@@ -112,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           tooltip: 'Sair',
           onPressed: () async {
+            await ApiService().logout();
             if (context.mounted) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const SignInScreen()),

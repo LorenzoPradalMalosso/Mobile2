@@ -1,43 +1,24 @@
-import '../database/database_helper.dart';
+import 'api_service.dart';
 
 class AuthService {
-  AuthService({DatabaseHelper? database})
-    : _database = database ?? DatabaseHelper.instance;
-  final DatabaseHelper _database;
+  AuthService({ApiService? api}) : _api = api ?? ApiService();
+  final ApiService _api;
 
   Future<void> createAccount(String email, String password) async {
-    if (!_validEmail(email)) {
-      throw const AuthException('Informe um e-mail válido.');
-    }
-    if (password.length < 6) {
-      throw const AuthException('A senha deve ter pelo menos 6 caracteres.');
-    }
-    try {
-      await _database.createAccount(email, password);
-      await _database.rememberBiometricAccount(email);
-    } catch (_) {
-      throw const AuthException('Já existe uma conta com este e-mail.');
-    }
+    if (!_validIdentifier(email)) throw const AuthException('Informe um NIF ou e-mail válido.');
+    if (password.length < 6) throw const AuthException('A senha deve ter pelo menos 6 caracteres.');
+    try { await _api.register(email.trim().toLowerCase(), password); }
+    on ApiException catch (e) { throw AuthException(e.message); }
   }
 
   Future<void> signIn(String email, String password) async {
-    if (!_validEmail(email) || password.isEmpty) {
-      throw const AuthException('Informe um e-mail e uma senha válidos.');
-    }
-    if (!await _database.authenticate(email, password)) {
-      throw const AuthException('E-mail ou senha incorretos.');
-    }
-    await _database.rememberBiometricAccount(email);
+    if (!_validIdentifier(email) || password.isEmpty) throw const AuthException('Informe um NIF/e-mail e uma senha válidos.');
+    try { await _api.login(email.trim().toLowerCase(), password); }
+    on ApiException catch (e) { throw AuthException(e.message); }
   }
 
-  Future<String?> biometricAccount() async {
-    final email = await _database.rememberedBiometricAccount();
-    if (email == null || !await _database.accountExists(email)) return null;
-    return email;
-  }
-
-  bool _validEmail(String email) =>
-      RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email.trim());
+  Future<String?> biometricAccount() => _api.rememberedEmail();
+  bool _validIdentifier(String identifier) => identifier.trim().isNotEmpty && !identifier.contains(RegExp(r'\s'));
 }
 
 class AuthException implements Exception {

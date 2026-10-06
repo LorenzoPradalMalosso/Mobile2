@@ -1,84 +1,48 @@
 # Relatório de implementação — Ponto Seguro
 
-## 1. Problema e solução
+## Objetivo e solução
 
-O Ponto Seguro registra entrada e saída de um colaborador quando a localização do dispositivo está no raio de 100 m do estabelecimento configurado. O acesso é feito por conta local (e-mail e senha) ou biometria do aparelho. Os dados são armazenados em SQLite no próprio dispositivo.
+O Ponto Seguro é um app Flutter para registrar entrada e saída de jornada dentro de 100 m do local de trabalho. A autenticação e persistência são feitas por uma API REST configurável; o projeto não usa Firebase nem banco local para contas ou marcações.
 
-## 2. Funcionalidades
+## Funcionalidades
 
-1. **Contas locais**: cadastro e login por e-mail e senha. O banco persiste um salt aleatório e hash SHA-256 da senha, nunca o texto puro.
-2. **Biometria**: `local_auth` solicita a confirmação do sistema operacional após primeiro acesso com senha no aparelho. Nenhuma imagem biométrica é capturada pelo app.
-3. **Geolocalização**: `geolocator` confere serviço e permissão e captura a localização de alta precisão. `Geolocator.distanceBetween` calcula a distância geodésica até o local; marcações além de 100 m são bloqueadas.
-4. **Registro de jornada**: as marcações alternam Entrada/Saída. Cada item guarda instante, coordenadas, distância, observação e caminho opcional de foto.
-5. **Câmera**: `image_picker` captura uma foto opcional e `path_provider` a copia ao armazenamento privado do app.
-6. **Consulta**: o histórico apresenta até 100 registros por conta; a tela de detalhes exibe hora, observação, foto, coordenadas e mapa OpenStreetMap.
-7. **Persistência**: `sqflite` cria e migra `ponto_seguro.db`, com tabelas separadas para contas e registros.
+- Cadastro e login por NIF/e-mail e senha via endpoints REST.
+- Biometria via `local_auth` para liberar a sessão autenticada no próprio aparelho.
+- Permissão e leitura de localização pelo `geolocator`; cálculo da distância até as coordenadas configuradas em `workplace.dart`; envio bloqueado fora do raio.
+- Histórico remoto e criação de registro com tipo, data/hora, latitude, longitude, distância e observação.
+- Foto opcional capturada pela câmera e guardada no diretório privado do app; não é enviada à API nesta versão.
+- Tela de detalhes com coordenadas e mapa OpenStreetMap.
 
-## 3. Arquitetura
+## Arquitetura
 
-A estrutura segue o padrão do projeto `senai_checkin`:
+- `models`: entidades de local de trabalho e registro.
+- `services/api_service.dart`: cliente HTTP, token Bearer, autenticação e operações de registro.
+- `services/auth_service.dart`: validações do formulário e tradução de erros de autenticação.
+- `services/location_service.dart` e `permission_service.dart`: permissões e leitura do GPS.
+- `controllers/ponto_controller.dart`: regra de raio, alternância Entrada/Saída e coordenação com API.
+- `views`: login/cadastro, painel, formulário e detalhes.
+- `widgets`: apresentação de cada registro no histórico.
 
-- `models`: entidades `PunchRecord` e `Workplace`.
-- `controllers`: validação do raio, determinação do tipo de ponto e coordenação do salvamento.
-- `database`: conexão SQLite, schema, migração e consultas por conta.
-- `services`: autenticação local, localização, permissões e câmera.
-- `views`: login/cadastro de conta, painel, formulário de ponto e detalhes.
-- `widgets`: cartão reutilizável para cada registro no histórico.
+## Integração REST
 
-As dependências principais são Flutter Material, `sqflite`, `path`, `crypto`, `shared_preferences`, `geolocator`, `local_auth`, `image_picker`, `path_provider`, `flutter_map` e `latlong2`.
+A URL base vem de `--dart-define=API_BASE_URL=...`. O cliente espera `POST /auth/register`, `POST /auth/login`, `GET /punches` e `POST /punches`. Cadastro/login retornam `token` (ou `access_token`) e opcionalmente `user` com `id` e `email`. Chamadas protegidas enviam `Authorization: Bearer <token>`. O formato completo de payloads e respostas está em [INSTALACAO.md](INSTALACAO.md).
 
-## 4. Modelo de dados
+O servidor precisa persistir contas e registros, verificar credenciais, emitir e validar tokens e derivar a identidade do usuário autenticado no endpoint de marcação. O app não confia no identificador de usuário enviado pelo cliente para definir o proprietário do ponto.
 
-### Tabela `accounts`
+## Decisões e limitações
 
-| Campo | Tipo | Uso |
-| --- | --- | --- |
-| `id` | INTEGER | Chave primária |
-| `email` | TEXT | E-mail único por conta |
-| `password_salt` | TEXT | Salt aleatório exclusivo |
-| `password_hash` | TEXT | Hash SHA-256 de salt e senha |
-| `created_at` | TEXT | Data e hora do cadastro |
+- A regra de 100 m é conferida no cliente para resposta imediata; o servidor também deve validá-la antes de aceitar um ponto.
+- A biometria é uma confirmação local do sistema operacional, não um método enviado ao servidor. A sessão existente é mantida localmente para permitir esse fluxo.
+- O token usa `shared_preferences` neste protótipo. Uma implantação real deve usar armazenamento protegido e HTTPS.
+- `api/server.js` é um backend didático local, sem dependências externas, que grava os dados em arquivo JSON. Tokens ficam em memória e são invalidados quando o processo reinicia; em produção, substitua por um serviço hospedado com banco durável e gestão segura de sessões.
+- Fotos são armazenadas localmente e não sincronizam entre dispositivos.
+- Horário e localização são fornecidos pelo aparelho e podem ser adulterados; o aplicativo é didático e não constitui controle antifraude trabalhista.
 
-### Tabela `punches`
-
-| Campo | Tipo | Uso |
-| --- | --- | --- |
-| `id` | INTEGER | Chave primária |
-| `account_id` | TEXT | E-mail da conta proprietária |
-| `type` | TEXT | Entrada ou Saída |
-| `at` | TEXT | Instante ISO 8601 |
-| `latitude`, `longitude` | REAL | Coordenadas do aparelho |
-| `distance_meters` | REAL | Distância ao local definido |
-| `note` | TEXT | Observação opcional |
-| `photo_path` | TEXT | Caminho privado local da foto opcional |
-
-## 5. APIs e hardware
-
-- **Geolocator / Android Location Services**: GPS em primeiro plano com permissão solicitada em contexto.
-- **Local Auth / Android BiometricPrompt**: autenticação por mecanismo cadastrado no aparelho.
-- **Image Picker / câmera Android**: captura de foto opcional como comprovante.
-- **SQLite / sqflite**: contas e marcações em banco local com migração de versão.
-- **Flutter Map / OpenStreetMap**: mapa dos pontos; acesso à internet é necessário somente para baixar imagens cartográficas.
-
-## 6. Decisões e desafios
-
-- O projeto fica executável sem conta externa ou arquivo de credenciais; o primeiro uso cria o banco SQLite.
-- As permissões de localização e câmera são pedidas no momento em que cada recurso é usado.
-- A separação por e-mail da conta no banco evita misturar o histórico de usuários do mesmo aparelho.
-- A foto é copiada para o diretório privado do app para não depender do cache temporário da câmera.
-- O app comunica erro quando o serviço de localização está desligado, a permissão é negada ou o colaborador está fora do raio.
-
-## 7. Escopo e limitações
-
-Este app é local e didático: não sincroniza registros, não recupera senha por e-mail e não transfere dados entre aparelhos. O hash SHA-256 com salt demonstra armazenamento sem texto puro, mas não substitui autenticação profissional baseada em um servidor com algoritmo de derivação de senha de custo adequado. Em produção, use backend, política de backup/retensão e controles de privacidade.
-
-GPS e relógio são fornecidos pelo dispositivo e podem ser simulados ou alterados. A checagem de raio no cliente não é mecanismo antifraude. A biometria confirma localmente o usuário do aparelho e não substitui uma identidade corporativa verificada.
-
-## 8. Critérios da avaliação
+## Critérios de avaliação
 
 | Competência | Evidência |
 | --- | --- |
-| Técnica (40%) | SQLite, cadastro/login, biometria, GPS, limite de 100 m, câmera, mapa e arquitetura por camadas. |
-| Interface e usabilidade (20%) | Fluxo em português, estados de localização, formulários, histórico e detalhes navegáveis. |
-| Criatividade e solução de problemas (20%) | Persistência por conta offline, comprovante fotográfico e mapa de conferência. |
-| Documentação (20%) | Este relatório, README e guia de instalação/configuração/uso. |
+| Técnica (40%) | API REST para autenticação e registros, biometria local, GPS, raio de 100 m e arquitetura em camadas. |
+| Interface e usabilidade (20%) | Fluxo em português, feedback de permissões/localização, histórico e detalhes navegáveis. |
+| Criatividade e solução de problemas (20%) | Mapa, comprovante fotográfico opcional e integração com serviço externo. |
+| Documentação (20%) | Este relatório, README e guia de configuração da API e execução. |

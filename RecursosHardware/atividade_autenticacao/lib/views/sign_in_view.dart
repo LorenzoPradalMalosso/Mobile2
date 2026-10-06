@@ -125,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Registro de jornada com armazenamento local.',
+                  'Registro de jornada conectado à API.',
                   style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
                 ),
                 const SizedBox(height: 28),
@@ -142,7 +142,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
-                    labelText: 'E-mail',
+                    labelText: 'NIF ou e-mail',
                     prefixIcon: Icon(Icons.person_outline),
                     border: OutlineInputBorder(),
                   ),
@@ -222,7 +222,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'As contas e os registros ficam neste aparelho. A biometria é validada pelo sistema operacional.',
+                  'A conta e os registros são gerenciados pela API. A biometria é validada pelo sistema operacional.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey.shade600,

@@ -28,15 +28,18 @@ class PunchRecord {
     'photo_path': photoPath,
   };
 
-  factory PunchRecord.fromMap(Map<String, Object?> map) => PunchRecord(
-    id: map['id'] as int?,
-    accountId: map['account_id'] as String? ?? '',
-    type: map['type'] as String,
-    at: DateTime.parse(map['at'] as String),
-    latitude: (map['latitude'] as num).toDouble(),
-    longitude: (map['longitude'] as num).toDouble(),
-    distance: (map['distance_meters'] as num).toDouble(),
-    note: map['note'] as String? ?? '',
-    photoPath: map['photo_path'] as String? ?? '',
-  );
+  factory PunchRecord.fromMap(Map<String, Object?> map) {
+    final rawAt = map['at'] ?? map['timestamp'] ?? map['created_at'];
+    return PunchRecord(
+      id: int.tryParse('${map['id']}'),
+      accountId: '${map['account_id'] ?? map['user_id'] ?? ''}',
+      type: '${map['type'] ?? 'Entrada'}',
+      at: DateTime.parse('$rawAt').toLocal(),
+      latitude: ((map['latitude'] ?? map['lat']) as num).toDouble(),
+      longitude: ((map['longitude'] ?? map['lng'] ?? map['lon']) as num).toDouble(),
+      distance: ((map['distance_meters'] ?? map['distance'] ?? 0) as num).toDouble(),
+      note: '${map['note'] ?? ''}',
+      photoPath: '${map['photo_path'] ?? ''}',
+    );
+  }
 }
